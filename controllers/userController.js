@@ -194,16 +194,24 @@ export const updateUser = async(req,res) => {
 
 
      const updatedData = await userExists.save();
+     console.log(updatedData)
 
      return res.status(200).json({
       success:true,
       message:"User updated successfully",
+      updatedData:{
+        user_name:updatedData.user_name,
+        user_email:updatedData.user_email,
+        user_password:updatedData.user_password,
+        user_image:updatedData.user_image
+       }
      })
      
   } catch (error) {
      return res.status(500).json({
          success:false,
-         message:error.messge
+         message:error.messge,
+      
      })
   }
 };
