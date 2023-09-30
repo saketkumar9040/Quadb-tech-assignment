@@ -15,7 +15,7 @@ export const authenticate = async (req, res, next) => {
     const userExists = await User.findOne({ user_id: decodedToken.user_id });
 
     if (!userExists) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "No such user Exists",
       });

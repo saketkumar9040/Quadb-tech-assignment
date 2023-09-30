@@ -95,14 +95,27 @@ export const loginUser = async (req,res) => {
           message:"password cannot be blank"
         })
       }
-      const userExists = await User.findOne({user_email});
+      const userExists = await User.findOne({user_email,user_password});
 
       if(!userExists){
         return res.status(404).json({
           success:false,
           message:"No user found"
         })
-      }
+      };
+
+      const token =await createToken(userExists.user_id,userExists.user_email);
+
+      const options = {
+        httpOnly: true,
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
+      };
+
+      return res.status(200).cookie("token",token,options).json({
+        success:false,
+        message:"user login successfully",
+      });
+
    } catch (error) {
       res.status(500).json({
         success:false,
