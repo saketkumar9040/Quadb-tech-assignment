@@ -2,7 +2,7 @@ import { User } from "../modals/userModal.js";
 import { v4 as uuidv4 } from 'uuid';
 import { createToken } from "../utils/token.js";
 
-export const registerUser = async (req, res) => {
+export const insertUser = async (req, res) => {
     try {
         const {
             user_name,
@@ -214,4 +214,42 @@ export const updateUser = async(req,res) => {
       
      })
   }
+};
+
+export const getImage = async(req,res) => {
+    try {
+      const {user_id} = req.params;
+
+      if( user_id === ":user_id"){
+        return res.status(400).json({
+          success:false,
+          message:"user id cannot be blank"
+        })
+      };
+
+      const userData = await User.findOne({user_id:user_id});
+      console.log(userData)
+
+      if(!userData){
+        return res.status(404).json({
+          success:false,
+          message:"No such user"
+        })
+      }
+
+      return res.status(200).json({
+        success:true,
+        message:"User image fetched successfully",
+        userImage:{
+          user_image:userData.user_image
+         }
+       })
+
+    } catch (error) {
+      return res.status(500).json({
+        success:false,
+        message:error.messge,
+     
+    })
+    }
 };
