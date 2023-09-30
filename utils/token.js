@@ -6,10 +6,9 @@ export const createToken = async (user_id, user_email) => {
       { user_id, user_email },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: process.env.JWT_TOKEN_EXPIRY,
+        expiresIn: process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000,
       }
     );
-    console.log(token);
     return token;
   } catch (error) { 
     throw new Error(error);

@@ -33,14 +33,13 @@ export const registerUser = async (req, res) => {
           const user_id = uuidv4();
 
           const token = await createToken(user_id,user_email);
-        //   console.log(token);
 
-        //   const options = {
-        //     httpOnly: true,
-        //     expires: new Date(Date.now() + process.env.COOKIE_EXPIRY),
-        //   };
-        
-          res.status(201).cookie("token",token).json({
+          const options = {
+            httpOnly: true,
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
+          };
+          
+          res.status(201).cookie("token",token,options).json({
             success:true,
             message:"User registered successfully",
             data:{
