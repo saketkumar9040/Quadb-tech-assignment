@@ -228,7 +228,6 @@ export const getImage = async(req,res) => {
       };
 
       const userData = await User.findOne({user_id:user_id});
-      console.log(userData)
 
       if(!userData){
         return res.status(404).json({
@@ -243,6 +242,41 @@ export const getImage = async(req,res) => {
         userImage:{
           user_image:userData.user_image
          }
+       })
+
+    } catch (error) {
+      return res.status(500).json({
+        success:false,
+        message:error.messge,
+     
+    })
+    }
+};
+
+export const deleteUser = async(req,res) => {
+    try {
+      const {user_id}= req.params;
+
+      if( user_id === ":user_id"){
+        return res.status(400).json({
+          success:false,
+          message:"user id cannot be blank"
+        })
+      };
+  
+      const userData = await User.findOne({user_id});
+      if(!userData){
+        return res.status(404).json({
+          success:false,
+          message:"No user found"
+        })
+      };
+
+      const deleteData = await User.deleteOne({user_id});
+
+      return res.status(200).json({
+        success:true,
+        message:"User deleted successfully",
        })
 
     } catch (error) {
