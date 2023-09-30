@@ -10,7 +10,7 @@ export const registerUser = async (req, res) => {
             user_email,
             user_password,
             user_image,
-            total_orders,
+            // total_orders,
             // created_at,
             // last_logged_in,
           } = req.body;
@@ -21,16 +21,34 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({success:false,message:"username cannot be blank"})
           }
           if(user_email === ""){
-            return res.status(400).json({success:false,message:"username cannot be blank"})
+            return res.status(400).json({success:false,message:"email cannot be blank"})
           }
           if(user_password === ""){
-            return res.status(400).json({success:false,message:"username cannot be blank"})
+            return res.status(400).json({success:false,message:"password cannot be blank"})
           }
           if(user_image === ""){
-            return res.status(400).json({success:false,message:"username cannot be blank"})
+            return res.status(400).json({success:false,message:"image cannot be blank"})
           };
 
           const user_id = uuidv4();
+          const total_orders =Math.floor(Math.random()*100);
+
+          const userData = {
+            user_id : uuidv4(),
+            user_name,
+            user_email,
+            user_password,
+            user_image,
+            total_orders : Math.floor(Math.random()*100),
+            created_at: new Date(Date.now()),
+            last_logged_in:null
+          };
+
+          const saveData = await User.create(userData);
+
+          if(!saveData){
+            return res.status(400).json({success:false,message:"Unable to save data, Please try again"})
+          }
 
           const token = await createToken(user_id,user_email);
 
