@@ -34,7 +34,7 @@ export const registerUser = async (req, res) => {
 
         //   const token = createToken(user_id,user_email)
         
-          res.status(201).cookies("token","sdflkjsdjfljsafjsldfjsdllfjsldjlfjsdljf").json({
+          res.status(201).cookie("token","sdflkjsdjfljsafjsldfjsdllfjsldjlfjsdljf").json({
             success:true,
             message:"User registered successfully",
             data:{
