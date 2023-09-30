@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
-import { User } from "../modals/userModal";
+import { User } from "../modals/userModal.js";
 
 export const authenticate = async (req, res, next) => {
   try {
-    const token = res.cookies.token;
+    const token = req.cookies.token;
+   
     if (!token) {
       return res.status(400).json({
         success: false,
@@ -22,6 +23,7 @@ export const authenticate = async (req, res, next) => {
     }
     req.userId = userExists.user_id;
     next();
+
   } catch (error) {
     return res.status(500).json({
       success: false,

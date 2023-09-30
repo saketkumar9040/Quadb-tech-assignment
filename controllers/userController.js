@@ -128,6 +128,7 @@ export const loginUser = async (req,res) => {
 export const userDetails = async(req,res)=>{
   try {
     const {user_id}= req.params;
+    console.log(req.userId);
 
     if( user_id === ":user_id"){
       return res.status(400).json({
