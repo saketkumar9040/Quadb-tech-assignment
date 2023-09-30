@@ -5,14 +5,10 @@ import { createToken } from "../utils/token.js";
 export const registerUser = async (req, res) => {
     try {
         const {
-            // user_id,
             user_name,
             user_email,
             user_password,
             user_image,
-            // total_orders,
-            // created_at,
-            // last_logged_in,
           } = req.body;
 
           //  USER INPUT VALIDATION ==================================================>
@@ -29,6 +25,15 @@ export const registerUser = async (req, res) => {
           if(user_image === ""){
             return res.status(400).json({success:false,message:"image cannot be blank"})
           };
+
+          const userExists = await User.findOne({user_email});
+
+          if(userExists){
+            return res.status(409).json({
+              success:false,
+              message:"Email id already in use"
+            })
+          }
 
           const user_id = uuidv4();
           const total_orders =Math.floor(Math.random()*100);
@@ -63,11 +68,45 @@ export const registerUser = async (req, res) => {
             data:{
                 user_id,
                 user_name,
-                user_email
+                user_email,
+                user_image,
+                total_orders, 
+                token
             }
           });
         
     } catch (error) {
         res.status(500).send({success:false,message:error.message})
     }
+};
+
+export const loginUser = async (req,res) => {
+   try {
+      const {user_email,user_password} = req.body;
+      if(user_email ===""){
+        return res.status(400).json({
+          success:false,
+          message:"email cannot be blank"
+        })
+      }
+      if(user_password ===""){
+        return res.status(400).json({
+          success:false,
+          message:"password cannot be blank"
+        })
+      }
+      const userExists = await User.findOne({user_email});
+
+      if(!userExists){
+        return res.status(404).json({
+          success:false,
+          message:"No user found"
+        })
+      }
+   } catch (error) {
+      res.status(500).json({
+        success:false,
+        message:error.message
+      })
+   }
 };
