@@ -18,7 +18,7 @@ export const authenticate = async (req, res, next) => {
     if (!userExists) {
       return res.status(404).json({
         success: false,
-        message: "No such user Exists",
+        message: "Unauthorized access",
       });
     }
     req.userId = userExists.user_id;
@@ -31,3 +31,4 @@ export const authenticate = async (req, res, next) => {
     });
   }
 };
+

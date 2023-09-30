@@ -106,6 +106,9 @@ export const loginUser = async (req,res) => {
 
       const token =await createToken(userExists.user_id,userExists.user_email);
 
+      userExists.last_logged_in = new Date(Date.now());
+      await userExists.save();
+
       const options = {
         httpOnly: true,
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
@@ -128,7 +131,6 @@ export const loginUser = async (req,res) => {
 export const userDetails = async(req,res)=>{
   try {
     const {user_id}= req.params;
-    console.log(req.userId);
 
     if( user_id === ":user_id"){
       return res.status(400).json({
@@ -157,4 +159,51 @@ export const userDetails = async(req,res)=>{
       message:error.message
     })
   }
-} 
+};
+
+export const updateUser = async(req,res) => {
+  try {
+     const userId = req.userId;
+     const {user_name,user_password,user_image} = req.body;
+     
+     const userExists = await User.findOne({user_id:userId});
+     
+     if (userId !== userExists.user_id) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    };
+
+    if(user_name==="" && user_image==="" && user_password===""){
+      return res.status(400).json({
+        success:false,
+        message:"updation fields cannot be empty"
+      })
+    }
+
+     if(user_name !== ""){
+      userExists.user_name=user_name;
+     };
+     if(user_image!==""){
+      userExists.user_image=user_image;
+     };
+     if(user_password!==""){
+      userExists.user_password=user_password;
+     };
+
+
+     const updatedData = await userExists.save();
+
+     return res.status(200).json({
+      success:true,
+      message:"User updated successfully",
+     })
+     
+  } catch (error) {
+     return res.status(500).json({
+         success:false,
+         message:error.messge
+     })
+  }
+};
