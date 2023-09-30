@@ -124,3 +124,36 @@ export const loginUser = async (req,res) => {
       })
    }
 };
+
+export const userDetails = async(req,res)=>{
+  try {
+    const {user_id}= req.params;
+
+    if( user_id === ":user_id"){
+      return res.status(400).json({
+        success:false,
+        message:"user id cannot be blank"
+      })
+    };
+
+    const userData = await User.findOne({user_id}).select("-user_password -user_id -_id -created_at -last_logged_in -__v");
+    if(!userData){
+      return res.status(404).json({
+        success:false,
+        message:"No user found"
+      })
+    };
+
+    return res.status(200).json({
+      success:true,
+      message:"fetch user details successfully",
+      userData:userData
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success:false,
+      message:error.message
+    })
+  }
+} 
